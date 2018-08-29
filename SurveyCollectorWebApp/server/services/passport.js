@@ -18,10 +18,19 @@ passport.use(
       //console.log("refreshToken: ", refreshToken);
       //console.log("profile: ", profile);
 
-      //create a new instance of User and save it to the database
-      new User({
-        googleId: profile.id
-      }).save();
+      //Check if the profile id already exists in the database
+      User.findOne({ googleId: profile.id }).then(existingUser => {
+        if (existingUser) {
+          //we already have a record with the given google profile ID
+        } else {
+          //we don't have a user record with this google profile ID, hence, we need to create a record
+
+          //create a new instance of User and save it to the database
+          new User({
+            googleId: profile.id
+          }).save();
+        }
+      });
     }
   )
 );
