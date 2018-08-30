@@ -19,6 +19,7 @@ module.exports = app => {
 
   //Route Handler to handle incoming request
   app.get("/api/current_user", (req, res) => {
+    //res.send(req.session); //cookieSession extracts id from the request and adds it to req.session. Passport then used that id on req.session to deserializeUser.
     res.send(req.user);
   });
 };
