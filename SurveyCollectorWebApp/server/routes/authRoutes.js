@@ -9,12 +9,18 @@ module.exports = app => {
   );
 
   //Route Handler to handle when Google directs user to /auth/google/callback with the code. This code will be sent by our server to Google to get the user profile.
-  app.get("/auth/google/callback", passport.authenticate("google"));
+  app.get(
+    "/auth/google/callback",
+    passport.authenticate("google"),
+    (req, res) => {
+      res.redirect("/surveys");
+    }
+  );
 
   //Route Handler to handle logout
   app.get("/api/logout", (req, res) => {
     req.logout(); //passport will unset the cookie
-    res.send(req.user);
+    res.redirect("/");
   });
 
   //Route Handler to handle incoming request
