@@ -2,13 +2,18 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cookieSession = require("cookie-session");
 const passport = require("passport");
+const bodyParser = require("body-parser");
 const keys = require("./config/keys");
+
 require("./models/User"); //NOTE: User schema should be defined first before it is used in ./services/passport
 require("./services/passport"); //We just need to execute code in this file, nothing is being exported from this file.
 
 mongoose.connect(keys.mongoURI);
 
 const app = express();
+
+//body-parser middleware for parsing request
+app.use(bodyParser.json());
 
 //Enable cookies
 app.use(
