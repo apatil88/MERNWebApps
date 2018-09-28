@@ -28,4 +28,6 @@ module.exports = app => {
     //res.send(req.session); //cookieSession extracts id from the request and adds it to req.session. Passport then used that id on req.session to deserializeUser.
     res.send(req.user);
   });
+
+  
 };
