@@ -6,6 +6,7 @@ const bodyParser = require("body-parser");
 const keys = require("./config/keys");
 
 require("./models/User"); //NOTE: User schema should be defined first before it is used in ./services/passport
+require("./models/Survey");
 require("./services/passport"); //We just need to execute code in this file, nothing is being exported from this file.
 
 mongoose.connect(keys.mongoURI);
