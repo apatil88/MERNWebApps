@@ -8,7 +8,7 @@ const Survey = mongoose.model("surveys");
 
 module.exports = app => {
   //Before creating a survey, check if the user is logged in and has sufficient credits
-  app.post("/api/surveys", requireLogin, requireCredits, (req, res) => {
+  app.post("/api/surveys", requireLogin, requireCredits, async (req, res) => {
     const { title, subject, body, recipients } = req.body;
 
     //Create a Survey instance
@@ -21,8 +21,22 @@ module.exports = app => {
       dateSent: Date.now()
     });
 
-    //Send an email
     const mailer = new Mailer(survey, surveyTemplate(survey));
-    mailer.send();
+    try {
+      //Send an email
+      await mailer.send();
+
+      //save the survey to the database
+      await survey.save();
+
+      //Update the credits
+      req.user.credits -= 1;
+      const user = await req.user.save();
+
+      //send the updated user to the client
+      res.send(user);
+    } catch (err) {
+      res.status(422); //Unprocessable entity
+    }
   });
 };
