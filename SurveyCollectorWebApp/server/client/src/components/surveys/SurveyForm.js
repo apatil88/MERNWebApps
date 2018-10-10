@@ -45,6 +45,17 @@ class SurveyForm extends Component {
   }
 }
 
+function validate(values) {
+  const errors = {};
+
+  if (!values.title) {
+    errors.title = "You must provide a title"; //Redux Form will pass this to the Field with the name="title" as props. This error message will be available on props.meta.error.
+  }
+
+  return errors; //If the errors object is empty, Redux Form assumes the entire form is valid.
+}
+
 export default reduxForm({
+  validate: validate, //this function is run automatically when the user submits the form
   form: "surveyForm"
 })(SurveyForm);
