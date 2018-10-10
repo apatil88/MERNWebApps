@@ -4,12 +4,29 @@ import React, { Component } from "react";
 import { reduxForm, Field } from "redux-form";
 import { Link } from "react-router-dom";
 import SurveyField from "./SurveyField";
+import validateEmails from "../../utils/validateEmails";
 
 const FIELDS = [
-  { label: "Survey Title", name: "title" },
-  { label: "Subject Line", name: "subject" },
-  { label: "Email Body", name: "body" },
-  { label: "Recipient List", name: "emails" }
+  {
+    label: "Survey Title",
+    name: "title",
+    noValueError: "You must provide a title"
+  },
+  {
+    label: "Subject Line",
+    name: "subject",
+    noValueError: "You must provide a subject"
+  },
+  {
+    label: "Email Body",
+    name: "body",
+    noValueError: "You must provide an email"
+  },
+  {
+    label: "Recipient List",
+    name: "emails",
+    noValueError: "You must provide a recipient"
+  }
 ];
 
 class SurveyForm extends Component {
@@ -48,9 +65,17 @@ class SurveyForm extends Component {
 function validate(values) {
   const errors = {};
 
-  if (!values.title) {
+  error.emails = validateEmails(values.emails || "");
+
+  _.each(FIELDS, ({ name, noValueError }) => {
+    if (!values[name]) {
+      errors[name] = noValueError;
+    }
+  });
+
+  /*if (!values.title) {
     errors.title = "You must provide a title"; //Redux Form will pass this to the Field with the name="title" as props. This error message will be available on props.meta.error.
-  }
+  }*/
 
   return errors; //If the errors object is empty, Redux Form assumes the entire form is valid.
 }
