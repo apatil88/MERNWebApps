@@ -12,7 +12,8 @@ export const handleToken = token => async dispatch => {
   dispatch({ type: FETCH_USER, payload: res.data }); //Here the res.data contains the User model which contains the Google ID and stripe token
 };
 
-export const submitSurvey = values => async dispatch => {
+export const submitSurvey = (values, history) => async dispatch => {
   const res = await axios.post("/api/surveys", values);
-  return dispatch({ type: FETCH_USER, payload: res.data });
+  history.push("/surveys"); //Redirect to /surveys route after submitting the survey
+  dispatch({ type: FETCH_USER, payload: res.data });
 };
