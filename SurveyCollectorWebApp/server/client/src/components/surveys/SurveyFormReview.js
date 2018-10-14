@@ -7,7 +7,7 @@ import formFields from "./formFields";
 import * as actions from "../../actions/index";
 
 const SurveyFormReview = ({ onCancel, formValues, submitSurvey, history }) => {
-  const reviewFields = _map(formFields, ({ name, label }) => {
+  const reviewFields = _.map(formFields, ({ name, label }) => {
     return (
       <div key={name}>
         <label>{label}</label>

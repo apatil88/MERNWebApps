@@ -11,7 +11,8 @@
     "start": "node index.js",
     "server": "nodemon index.js",
     "client": "npm run start --prefix client",
-    "dev": "concurrently \"npm run server\" \"npm run client\""
+    "dev": "concurrently \"npm run server\" \"npm run client\" \"npm run webhook\"",
+    "webhook": "lt -p 5000 -s sfdfdfw"
   },
   "author": "A.Patil",
   "license": "ISC",
@@ -20,6 +21,7 @@
     "concurrently": "^4.0.1",
     "cookie-session": "^2.0.0-beta.3",
     "express": "^4.16.3",
+    "localtunnel": "^1.9.1",
     "mongoose": "^5.2.10",
     "nodemon": "^1.18.3",
     "passport": "^0.4.0",

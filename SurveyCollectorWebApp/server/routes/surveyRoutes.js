@@ -11,6 +11,11 @@ module.exports = app => {
     res.send("Thanks for voting!");
   });
 
+  api.post("/api/surveys/webhooks", (req, res) => {
+    console.log(req.body);
+    res.send({});
+  });
+
   //Before creating a survey, check if the user is logged in and has sufficient credits
   app.post("/api/surveys", requireLogin, requireCredits, async (req, res) => {
     const { title, subject, body, recipients } = req.body;

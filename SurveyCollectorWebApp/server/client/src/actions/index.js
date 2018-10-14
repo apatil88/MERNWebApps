@@ -1,5 +1,5 @@
 import axios from "axios";
-import { FETCH_USER, SUBMIT_SURVEY } from "./types";
+import { FETCH_USER } from "./types";
 
 //redux-thunk sees that we return a function. It will automatically call it with the dispatch function.
 export const fetchUser = () => async dispatch => {
