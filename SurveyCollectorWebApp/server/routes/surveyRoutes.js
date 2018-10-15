@@ -15,14 +15,23 @@ module.exports = app => {
   });
 
   api.post("/api/surveys/webhooks", (req, res) => {
-    const events = _.map(req.body, event => {
+    const events = _.map(req.body, ({ email, url }) => {
       //Extract the path from the URL (e.g. : /api/surveys/5971/yes)
-      const pathname = new URL(event.url).pathname;
+      const pathname = new URL(url).pathname;
 
       //Extract the surveyID and the choice
       const p = new Path("/api/surveys/:surveyId/:choice");
-      console.log(p.test(pathname));
+      const match = p.test(pathname); //match will be null if surveyId and choice cannot be extracted
+      if (match) {
+        return {
+          email,
+          surveyId: match.surveyId,
+          choice: match.choice
+        };
+      }
     });
+
+    console.log(events);
   });
 
   //Before creating a survey, check if the user is logged in and has sufficient credits
