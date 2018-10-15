@@ -15,26 +15,27 @@ module.exports = app => {
   });
 
   api.post("/api/surveys/webhooks", (req, res) => {
-    const events = _.map(req.body, ({ email, url }) => {
-      //Extract the path from the URL (e.g. : /api/surveys/5971/yes)
-      const pathname = new URL(url).pathname;
+    const p = new Path("/api/surveys/:surveyId/:choice");
+    const events = _.chain(req.body)
+      .map(({ email, url }) => {
+        //Extract the path from the URL (e.g. : /api/surveys/5971/yes)
+        //Extract the surveyID and the choice
 
-      //Extract the surveyID and the choice
-      const p = new Path("/api/surveys/:surveyId/:choice");
-      const match = p.test(pathname); //match will be null if surveyId and choice cannot be extracted
-      if (match) {
-        return {
-          email,
-          surveyId: match.surveyId,
-          choice: match.choice
-        };
-      }
-    });
+        const match = p.test(new URL(url).pathname); //match will be null if surveyId and choice cannot be extracted
+        if (match) {
+          return {
+            email,
+            surveyId: match.surveyId,
+            choice: match.choice
+          };
+        }
+      })
 
-    const compactEvents = _.compact(events); //Removes elements that are undefined
-    const uniqueEvents = _.uniqBy(compactEvents, "email", "surveyId"); //Remove elements with duplicate email and surveyId
+      .compact() //Removes elements that are undefined
+      .uniqBy("email", "surveyId") //Remove elements with duplicate email and surveyId
+      .value();
 
-    console.log(uniqueEvents);
+    console.log(events);
     res.send({});
   });
 
