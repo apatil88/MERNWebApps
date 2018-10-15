@@ -10,13 +10,13 @@ const surveyTemplate = require("../services/emailTemplates/surveyTemplate");
 const Survey = mongoose.model("surveys");
 
 module.exports = app => {
-  app.get("/api/surveys/thanks", (req, res) => {
+  app.get("/api/surveys/:surveyId/:choice", (req, res) => {
     res.send("Thanks for voting!");
   });
 
   api.post("/api/surveys/webhooks", (req, res) => {
     const p = new Path("/api/surveys/:surveyId/:choice");
-    const events = _.chain(req.body)
+    _.chain(req.body)
       .map(({ email, url }) => {
         //Extract the path from the URL (e.g. : /api/surveys/5971/yes)
         //Extract the surveyID and the choice
@@ -33,9 +33,23 @@ module.exports = app => {
 
       .compact() //Removes elements that are undefined
       .uniqBy("email", "surveyId") //Remove elements with duplicate email and surveyId
+      .each(({ surveyId, email, choice }) => {
+        Survey.updateOne(
+          {
+            _id: surveyId,
+            recipients: {
+              $elemMatch: { email: email, responded: false } //find the survey for the specific recipient who has not responded
+            }
+          },
+          {
+            $inc: { [choice]: 1 },
+            $set: { "recipients.$.responded": true }, //set the responded value to true once the user responds to the survey in the email
+            lastResponded: new Date()
+          }
+        ).exec();
+      })
       .value();
 
-    console.log(events);
     res.send({});
   });
 
