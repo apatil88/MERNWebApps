@@ -31,7 +31,11 @@ module.exports = app => {
       }
     });
 
-    console.log(events);
+    const compactEvents = _.compact(events); //Removes elements that are undefined
+    const uniqueEvents = _.uniqBy(compactEvents, "email", "surveyId"); //Remove elements with duplicate email and surveyId
+
+    console.log(uniqueEvents);
+    res.send({});
   });
 
   //Before creating a survey, check if the user is logged in and has sufficient credits
