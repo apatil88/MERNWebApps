@@ -1,3 +1,6 @@
+const _ = require("lodash");
+const Path = require("path-parser");
+const { URL } = require("url");
 const mongoose = require("mongoose");
 const requireLogin = require("../middlewares/requireLogin");
 const requireCredits = require("../middlewares/requireCredits");
@@ -12,8 +15,14 @@ module.exports = app => {
   });
 
   api.post("/api/surveys/webhooks", (req, res) => {
-    console.log(req.body);
-    res.send({});
+    const events = _.map(req.body, event => {
+      //Extract the path from the URL (e.g. : /api/surveys/5971/yes)
+      const pathname = new URL(event.url).pathname;
+
+      //Extract the surveyID and the choice
+      const p = new Path("/api/surveys/:surveyId/:choice");
+      console.log(p.test(pathname));
+    });
   });
 
   //Before creating a survey, check if the user is logged in and has sufficient credits
